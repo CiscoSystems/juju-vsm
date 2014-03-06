@@ -6,36 +6,33 @@
 
 ovsbridge=$(config-get ovsbridge)
 physicalinterfaceforovs=$(config-get physicalinterfaceforovs)
-nodeip=$(config-get nodeip)
-nodenetmask=$(config-get nodenetmask)
-nodegateway=$(config-get nodegateway)
-nodedns=$(config-get nodedns)
-vsmname=$(config-get vsmname)
-consolepts=$(config-get consolepts)
+vsmname=$(config-get n1k-vsm-name)
+consolepts=$(config-get n1k-vsm-console-pts)
 isoimage=$(config-get isoimage)
-vsmrole=$(config-get vsmrole)
-domainid=$(config-get domainid)
-adminpasswd=$(config-get adminpasswd)
-mgmtip=$(config-get mgmtip)
-mgmtnetmask=$(config-get mgmtnetmask)
-mgmtgateway=$(config-get mgmtgateway)
-ctrlinterface=$(config-get ctrlinterface)
-ctrlmac=$(config-get ctrlmac)
-mgmtinterface=$(config-get mgmtinterface)
-mgmtmac=$(config-get mgmtmac)
-pktinterface=$(config-get pktinterface)
-pktmac=$(config-get pktmac)
-memory=$(config-get memory)
-vcpu=$(config-get vcpu)
-disksize=$(config-get disksize)
+vsmrole=$(config-get n1k-vsm-role)
+domainid=$(config-get n1k-vsm-domainid)
+adminpasswd=$(config-get n1k-vsm-password)
+mgmtip=$(config-get n1k-vsm-mgmt-ip)
+mgmtnetmask=$(config-get n1k-vsm-mgmt-netmask)
+mgmtgateway=$(config-get n1k-vsm-mgmt-gateway)
+ctrlinterface=$(config-get n1k-vsm-ctrl-interface)
+ctrlmac=$(config-get n1k-vsm-ctrlmac)
+mgmtinterface=$(config-get n1k-vsm-mgmt-interface)
+mgmtmac=$(config-get n1k-vsm-mgmtmac)
+pktinterface=$(config-get n1k-vsm-pktinterface)
+pktmac=$(config-get n1k-vsm-pktmac)
+memory=$(config-get n1k-vsm-vm-memory)
+vcpu=$(config-get n1k-vsm-vm-vcpu)
+disksize=$(config-get n1k-vsm-vm-disksize)
 
 finaliso=/var/spool/vsm/${vsmrole}_repacked.iso
 diskfile=/var/spool/vsm/${vsmrole}_disk
-isofile=/opt/cisco/iso/${isoimage}
+#isofile=/opt/cisco/iso/${isoimage}
+isofilepath=/opt/cisco/iso/
 
 export physicalinterfaceforovs ovsbridge
 export nodeip nodenetmask nodegateway nodedns
-export isoimage finaliso diskfile disksize consolepts
+export isoimage diskfile disksize consolepts isofilepath isofile finaliso
 export domainid vsmname mgmtip mgmtnetmask mgmtgateway adminpasswd vsmrole
 export ctrlinterface ctrlmac mgmtinterface mgmtmac pktinterface pktmac memory vcpu
 
@@ -44,8 +41,7 @@ function start_openvswitch {
     juju-log "Start the openvswitch process"
     /usr/sbin/service openvswitch-switch start
 
-    reload_kmod=`/usr/sbin/service openvswitch-switch status | /bin/grep -c 'ovs-brcompatd is n
-ot running'`
+    reload_kmod=`/usr/sbin/service openvswitch-switch status | /bin/grep -c 'ovs-brcompatd is not running'`
     if [ $reload_kmod -eq 1 ]; then
       juju-log "Force reload the new openvswitch kernel module"
       /etc/init.d/openvswitch-switch force-reload-kmod
@@ -77,6 +73,18 @@ function update_ovs_interfaces {
     /etc/init.d/networking restart
 }
 
+#Find the name of nexus vsm iso
+function get_vsm_iso_filename {
+    juju-log "Determine the file of nexus vsm iso in /opt/cisco/iso"
+    files=( ${isofilepath}*.iso )
+    for file in "${files[@]}"
+    do
+        isofile="${file}"
+        juju-log "isofile is $isofile"
+        break
+    done
+}
+
 #Repack the nexus 1k iso
 function repack_iso {
     juju-log "Repack the VSM ISO with the setup script enviornment variables"
@@ -92,16 +100,40 @@ function generate_vsm_vm_xml {
     juju-log "vsm_vm.xml creation done" 
 }
 
-function download_vsm_iso_from_ppa {
-tee /etc/apt/sources.list.d/springfield-ppa.list <<EOF
-deb https://shivrao:ZSCc3jxB4RMLrLqZlp9T@private-ppa.launchpad.net/springfield-team/n1k-staging/ubuntu precise main #Personal access of Shiv Prasad Rao (shivrao) to Cisco Nexus 1000v Staging PPA
-deb-src https://shivrao:ZSCc3jxB4RMLrLqZlp9T@private-ppa.launchpad.net/springfield-team/n1k-staging/ubuntu precise main #Personal access of Shiv Prasad Rao (shivrao) to Cisco Nexus 1000v Staging PPA
-EOF
+function add_repo {
+    # remove old repos
+    rm -f /etc/apt/sources.list.d/springfield-ppa.list
 
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F5DB2BA06DB3EEB4
+    # get the source from input config.
+    source=$(config-get n1kv-source)
+    if [ "$source" == "distro" ]; then
+        exit 1
+    fi
+
+    arr_source=($source)
+    if [ ${arr_source[0]} = 'deb' ];then
+        key=`cut -d "|" -f 2 <<< "$source"`
+        deb_sources=`cut -d "|" -f 1 <<< "$source"`
+        No_repos=`awk -F',' '{ print NF }' <<<"$deb_sources"`
+        i=1
+        while [ "$No_repos" -ne "0" ]; do
+            deb_source=`cut -d "," -f $i <<< "$deb_sources"`
+            echo $deb_source >> /etc/apt/sources.list.d/springfield-ppa.list
+            i=$((i + 1))
+            No_repos=$((No_repos - 1))
+        done
+
+        apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys $key
+    fi
+
+}
+
+function download_vsm_iso_from_ppa {
+    juju-log "Do apt-get update"
     apt-get update
+    juju-log "Download the nexus-1000v-iso"
     apt-get install nexus-1000v-iso
-    cp /opt/cisco/iso/$isoimage /var/spool/vsm/.
+    get_vsm_iso_filename
 }
 
 function qemu_img_create {
@@ -114,15 +146,9 @@ function qemu_img_create {
     fi
 }
 
-download_vsm_iso_from_ppa
-start_openvswitch
-repack_iso
-update_ovs_interfaces
-generate_vsm_vm_xml
-qemu_img_create
-
 vsm_running=`/usr/bin/virsh list | grep -c ' $vsmname .* running'`
 if [ $vsm_running -eq 0 ]; then
+    add_repo
     download_vsm_iso_from_ppa
     start_openvswitch
     update_ovs_interfaces
