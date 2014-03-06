@@ -2,31 +2,31 @@ options:
   n1k-vsm-name:
     type: string
     default: "vsm-p"
-    description: "VSM virtual machine name"
+    description: "Nexus1k VSM virtual machine name"
   n1k-vsm-role:
     type: string
     default: "primary"
-    description: "This VSMs role primary or secondary"
+    description: "Nexus1k VSMs role - primary or secondary"
   n1k-vsm-domainid:
     type: int
     default: 101
-    description: "Domain id this vsm will be controlling"
+    description: "Domain id this nexus1k vsm will be controlling"
   n1k-vsm-password:
     type: string
     default: "N1k12345"
-    description: "admin password for the VSM VM"
+    description: "admin password for the VSM virtual machine"
   n1k-vsm-mgmt-ip:
     type: string
-    default: "10.193.180.138"
-    description: "VSM VMs management ip address"
+    default: ""
+    description: "VSM virtual machines management ip address"
   n1k-vsm-mgmt-netmask:
     type: string
-    default: "255.255.255.0"
-    description: "VSM VMs management netmask"
+    default: ""
+    description: "VSM virtual machines management netmask"
   n1k-vsm-mgmt-gateway:
     type: string
-    default: "10.193.180.254"
-    description: "VSM VMs management gateway"
+    default: ""
+    description: "VSM virtual machines management gateway"
   n1k-vsm-console-pts:
     type: int
     default: 2
@@ -58,7 +58,7 @@ options:
   n1k-vsm-mgmtmac:
     type: string
     default: "00:10:11:72:40:02"
-    description: "Management tap interface name"
+    description: "Mac address of Management interface from VSM"
   n1k-vsm-pktinterface:
     type: string
     default: "tap2"
@@ -66,17 +66,17 @@ options:
   n1k-vsm-pktmac:
     type: string
     default: "00:10:11:72:40:03"
-    description: "Packet tap interface name"
+    description: "Mac address of Packet interface from VSM"
   n1k-vsm-vm-memory:
     type: int
     default: 2048000
-    description: "Memory for the VSM VM"
+    description: "Memory for the Nexus1k VSM virtual machine"
   n1k-vsm-vm-vcpu:
     type: int
     default: 2
-    description: "Number of VCPU for the VSM VM"
+    description: "Number of VCPU for the Nexus1k VSM virtual machine"
   n1k-vsm-vm-disksize:
     type: int
     default: 4
-    description: "Disk size for the VSM VM"
+    description: "Disk size for the Nexus1k VSM virtual machine"
   n1kv-source: deb https://shivrao:ZSCc3jxB4RMLrLqZlp9T@private-ppa.launchpad.net/springfield-team/n1k-staging/ubuntu precise main,deb-src https://shivrao:ZSCc3jxB4RMLrLqZlp9T@private-ppa.launchpad.net/springfield-team/n1k-staging/ubuntu precise main|F5DB2BA06DB3EEB4
