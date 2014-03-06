@@ -79,4 +79,13 @@ options:
     type: int
     default: 4
     description: "Disk size for the Nexus1k VSM virtual machine"
-  n1kv-source: deb https://shivrao:ZSCc3jxB4RMLrLqZlp9T@private-ppa.launchpad.net/springfield-team/n1k-staging/ubuntu precise main,deb-src https://shivrao:ZSCc3jxB4RMLrLqZlp9T@private-ppa.launchpad.net/springfield-team/n1k-staging/ubuntu precise main|F5DB2BA06DB3EEB4
+  n1kv-source:
+    type: string
+    default: distro
+    description: |
+      Optional configuration to support use of additional sources such as:
+      .
+        - ppa:myteam/ppa
+        - deb http://my.archive.com/ubuntu main|KEYID
+      .
+      Note that this is used only for Cisco n1kv plugin.
