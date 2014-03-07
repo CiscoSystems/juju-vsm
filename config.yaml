@@ -1,33 +1,33 @@
 options:
-  n1k-vsm-name:
+  n1kv-vsm-name:
     type: string
     default: "vsm-p"
     description: "Nexus1k VSM virtual machine name"
-  n1k-vsm-role:
+  n1kv-vsm-role:
     type: string
     default: "primary"
     description: "Nexus1k VSMs role - primary or secondary"
-  n1k-vsm-domainid:
+  n1kv-vsm-domain-id:
     type: int
     default: 101
     description: "Domain id this nexus1k vsm will be controlling"
-  n1k-vsm-password:
+  n1kv-vsm-password:
     type: string
     default: "N1k12345"
     description: "admin password for the VSM virtual machine"
-  n1k-vsm-mgmt-ip:
+  n1kv-vsm-mgmt-ip:
     type: string
     default: ""
     description: "VSM virtual machines management ip address"
-  n1k-vsm-mgmt-netmask:
+  n1kv-vsm-mgmt-netmask:
     type: string
     default: ""
     description: "VSM virtual machines management netmask"
-  n1k-vsm-mgmt-gateway:
+  n1kv-vsm-mgmt-gateway:
     type: string
     default: ""
     description: "VSM virtual machines management gateway"
-  n1k-vsm-console-pts:
+  n1kv-vsm-console-pts:
     type: int
     default: 2
     description: "VSM virtual machine name"
@@ -43,39 +43,39 @@ options:
     type: string
     default: "n1000v-dk9.5.2.1.SK1.2.1.iso"
     description: "VSM virtual machine name"
-  n1k-vsm-ctrl-interface:
+  n1kv-vsm-ctrl-interface:
     type: string
     default: "tap0"
     description: "Control tap interface name"
-  n1k-vsm-ctrlmac:
+  n1kv-vsm-ctrl-mac:
     type: string
     default: "00:10:11:72:40:00"
     description: "Mac address of Control interface from VSM"
-  n1k-vsm-mgmt-interface:
+  n1kv-vsm-mgmt-interface:
     type: string
     default: "tap1"
     description: "Management tap interface name"
-  n1k-vsm-mgmtmac:
+  n1kv-vsm-mgmt-mac:
     type: string
     default: "00:10:11:72:40:02"
     description: "Mac address of Management interface from VSM"
-  n1k-vsm-pktinterface:
+  n1kv-vsm-pkt-interface:
     type: string
     default: "tap2"
     description: "Packet tap interface name"
-  n1k-vsm-pktmac:
+  n1kv-vsm-pkt-mac:
     type: string
     default: "00:10:11:72:40:03"
     description: "Mac address of Packet interface from VSM"
-  n1k-vsm-vm-memory:
+  n1kv-vsm-vm-memory:
     type: int
     default: 2048000
     description: "Memory for the Nexus1k VSM virtual machine"
-  n1k-vsm-vm-vcpu:
+  n1kv-vsm-vm-vcpu:
     type: int
     default: 2
     description: "Number of VCPU for the Nexus1k VSM virtual machine"
-  n1k-vsm-vm-disksize:
+  n1kv-vsm-vm-disksize:
     type: int
     default: 4
     description: "Disk size for the Nexus1k VSM virtual machine"

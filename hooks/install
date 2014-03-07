@@ -52,7 +52,7 @@ function install_vsm_dependency_pacakges {
 }
 
 #Remove and disable auto start for virsh network
-function vish_remove_network {
+function virsh_remove_network {
     #Remove virsh network
     if test -e /usr/bin/virsh; then
 
@@ -104,7 +104,7 @@ function install_ovs_components {
 #Start the install hook
 add_havana_apt_repo
 install_vsm_dependency_pacakges
-vish_remove_network
+virsh_remove_network
 install_ovs_components
 
 #Create the vsm directory in /var/spool
