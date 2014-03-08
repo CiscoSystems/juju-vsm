@@ -111,7 +111,7 @@ function add_repo {
     fi
 
     arr_source=($source)
-    if [ ${arr_source[0]} = 'deb' ];then
+    if [ ${arr_source[0]} = "deb" ];then
         key=`cut -d "|" -f 2 <<< "$source"`
         deb_sources=`cut -d "|" -f 1 <<< "$source"`
         No_repos=`awk -F',' '{ print NF }' <<<"$deb_sources"`
