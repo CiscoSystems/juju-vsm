@@ -25,37 +25,61 @@ In the config.yaml you can provide general config that will be
 common to all VSM hosts in environement. To differentiate the 
 different primary and secondary VSM configuration, we create 
 seperate sections for them, for example:
+
 vsm-primary:
+
     n1kv-vsm-domain-id: 101
+
     n1kv-vsm-password: password
+
     n1kv-vsm-name: vsm-p
+
     n1kv-vsm-role: primary
+
     n1kv-vsm-ip: 10.10.10.10
+
     n1kv-vsm-mgmt-netmask: 255.255.255.0
+
     n1kv-mgmt-gateway: 10.10.10.1
+
     .....
+
 vsm-secondary:
+
     n1kv-vsm-domain-id: 101
+
     n1kv-vsm-password: password
+
     n1kv-vsm-name: vsm-s
+
     n1kv-vsm-role: secondary
+
     n1kv-vsm-ip: 0.0.0.0
+
     n1kv-vsm-mgmt-netmask: 0.0.0.0
+
     n1kv-mgmt-gateway: 0.0.0.0
+
     .....
    
 At deployment time, for primary:
+
    juju deploy --config=<vsm-config> vsm vsm-primary
+
 At deployment time, for secondary:
+
    juju deploy --config=<vsm-config> vsm vsm-secondary
 
 To put VEM into VSM supervision, user needs to do the following:
+
    juju add-relation vsm vem
 
 Contact Information
 -------------------
 Author: Marga Millet Sorolla <millet@cisco.com>
+
 Report bugs at: http://bugs.launchpad.net/charms/+source/vsm
+
 Location: http://jujucharms.com/charms/distro/vsm
 
 
