@@ -64,11 +64,11 @@ vsm-secondary:
    
 At deployment time, for primary:
 
-   juju deploy --config=/<vsm-config/> vsm vsm-primary
+   juju deploy --config=vsm-config vsm vsm-primary
 
 At deployment time, for secondary:
 
-   juju deploy --config=/<vsm-config/> vsm vsm-secondary
+   juju deploy --config=vsm-config vsm vsm-secondary
 
 To put VEM into VSM supervision, user needs to do the following:
 
