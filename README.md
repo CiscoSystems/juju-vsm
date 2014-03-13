@@ -56,6 +56,6 @@ Contact Information
 -------------------
 Author: Marga Millet Sorolla <millet@cisco.com>
 Report bugs at: http://bugs.launchpad.net/charms/+source/vsm
-Location: http://jujucharms.com/charms/distro/vem
+Location: http://jujucharms.com/charms/distro/vsm
 
 
