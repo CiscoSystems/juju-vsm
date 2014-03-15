@@ -3,12 +3,12 @@
 # 1- after install hook when deploying the charm
 # 2- everytime a new configuration value is updated (juju set)
 
+source ./hooks/lib/common.sh
 
-ovsbridge=$(config-get ovsbridge)
-physicalinterfaceforovs=$(config-get physicalinterfaceforovs)
-vsmname=$(config-get n1kv-vsm-name)
+ovsbridge=$(config-get n1kv-bridge-name)
+physicalinterfaceforovs=$(config-get n1kv-phy-intf-bridge)
 consolepts=$(config-get n1kv-vsm-console-pts)
-isoimage=$(config-get isoimage)
+isoimage=$(config-get iso-image)
 vsmrole=$(config-get n1kv-vsm-role)
 domainid=$(config-get n1kv-vsm-domain-id)
 adminpasswd=$(config-get n1kv-vsm-password)
@@ -21,31 +21,28 @@ mgmtinterface=$(config-get n1kv-vsm-mgmt-interface)
 mgmtmac=$(config-get n1kv-vsm-mgmt-mac)
 pktinterface=$(config-get n1kv-vsm-pkt-interface)
 pktmac=$(config-get n1kv-vsm-pkt-mac)
-memory=$(config-get n1kv-vsm-vm-memory)
 vcpu=$(config-get n1kv-vsm-vm-vcpu)
 disksize=$(config-get n1kv-vsm-vm-disksize)
+VERSION=$(config-get n1kv-version)
+LOCAL_REPO=$(config-get n1kv-local-repo)
 
-finaliso=/var/spool/vsm/${vsmrole}_repacked.iso
-diskfile=/var/spool/vsm/${vsmrole}_disk
-#isofile=/opt/cisco/iso/${isoimage}
-isofilepath=/opt/cisco/iso/
+
+finaliso=${VSM_VM_DIR}/${vsmrole}_repacked.iso
+diskfile=${VSM_VM_DIR}/${vsmrole}_disk
+isofile=${VSM_ISO_DIR}/${isoimage}
+isofilepath=${VSM_ISO_DIR}
 
 export physicalinterfaceforovs ovsbridge
 export nodeip nodenetmask nodegateway nodedns
 export isoimage diskfile disksize consolepts isofilepath isofile finaliso
-export domainid vsmname mgmtip mgmtnetmask mgmtgateway adminpasswd vsmrole
-export ctrlinterface ctrlmac mgmtinterface mgmtmac pktinterface pktmac memory vcpu
+export domainid mgmtip mgmtnetmask mgmtgateway adminpasswd vsmrole
+export ctrlinterface ctrlmac mgmtinterface mgmtmac pktinterface pktmac vcpu
 
 #start the openvswitch
-function start_openvswitch {
+function start_openvswitch
+{
     juju-log "Start the openvswitch process"
     /usr/sbin/service openvswitch-switch start
-
-    reload_kmod=`/usr/sbin/service openvswitch-switch status | /bin/grep -c 'ovs-brcompatd is not running'`
-    if [ $reload_kmod -eq 1 ]; then
-      juju-log "Force reload the new openvswitch kernel module"
-      /etc/init.d/openvswitch-switch force-reload-kmod
-    fi
 
     juju-log "Add the ovs bridge"
     /usr/bin/ovs-vsctl -- --may-exist add-br $ovsbridge
@@ -57,13 +54,13 @@ function start_openvswitch {
 }
 
 #Move the phsical interface to ovs bridge
-function update_ovs_interfaces {
+function update_ovs_interfaces
+{
     juju-log "Move the physical interface to ovs bridge and restart network"
 
     juju-log "using eth-config.tmpl to create eth-config"
     cheetah fill --env --oext compiled templates/eth-config.tmpl
     juju-log "copy the compiled template to /etc/network/"
-    #cp templates/eth-config.compiled /etc/network/${physicalinterfaceforovs}.config
     cp templates/eth-config.compiled /etc/network/interfaces
 
     juju-log "unset the ip address for physical interface"
@@ -74,8 +71,9 @@ function update_ovs_interfaces {
 }
 
 #Find the name of nexus vsm iso
-function get_vsm_iso_filename {
-    juju-log "Determine the file of nexus vsm iso in /opt/cisco/iso"
+function get_vsm_iso_filename
+{
+    juju-log "Determine the file of nexus vsm iso in $isofilepath"
     files=( ${isofilepath}*.iso )
     for file in "${files[@]}"
     do
@@ -86,32 +84,36 @@ function get_vsm_iso_filename {
 }
 
 #Repack the nexus 1k iso
-function repack_iso {
-    juju-log "Repack the VSM ISO with the setup script enviornment variables"
+function repack_iso
+{
+    juju-log "Repack the VSM ISO with the setup script environment variables"
     pwd
-    ./hooks/lib/repackiso.py -i $isofile -d $domainid -n $vsmname -m $mgmtip -s $mgmtnetmask -g $mgmtgateway -p $adminpasswd -r $vsmrole -f $finaliso
+    ./hooks/lib/repackiso.py -i $isofile -d $domainid -n $VSM_NAME -m $mgmtip -s $mgmtnetmask -g $mgmtgateway -p $adminpasswd -r $vsmrole -f $finaliso
 }
 
 #Generate the vsm vm xml file
-function generate_vsm_vm_xml {
-    juju-log "Complie the vsm_vsm.xml from the template"
+function generate_vsm_vm_xml
+{
+    juju-log "Compile the vsm_vsm.xml from the template"
     cheetah fill --env --oext compiled templates/vsm_vm.xml.tmpl
     cp templates/vsm_vm.xml.compiled /var/spool/vsm/vsm_vm.xml
     juju-log "vsm_vm.xml creation done" 
 }
 
-function add_repo {
+function add_remote_repo
+{
     # remove old repos
     rm -f /etc/apt/sources.list.d/springfield-ppa.list
 
     # get the source from input config.
     source=$(config-get n1kv-source)
     if [ "$source" == "distro" ]; then
+        juju-log "n1k-source is distro"
         exit 1
     fi
 
     arr_source=($source)
-    if [ ${arr_source[0]} = "deb" ];then
+    if [ ${arr_source[0]} == "deb" ];then
         key=`cut -d "|" -f 2 <<< "$source"`
         deb_sources=`cut -d "|" -f 1 <<< "$source"`
         No_repos=`awk -F',' '{ print NF }' <<<"$deb_sources"`
@@ -125,10 +127,10 @@ function add_repo {
 
         apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys $key
     fi
-
 }
 
-function download_vsm_iso_from_ppa {
+function download_vsm_iso_from_ppa
+{
     juju-log "Do apt-get update"
     apt-get update
     juju-log "Download the nexus-1000v-iso"
@@ -136,25 +138,93 @@ function download_vsm_iso_from_ppa {
     get_vsm_iso_filename
 }
 
-function qemu_img_create {
-    juju-log "Check and create the qemu-img"
-    vsm_running=`/usr/bin/virsh list | grep -c ' $vsmname .* running'`
+#
+# Given a specific version of the VSM (n1kv-version), 
+# get the debian package a given local place (n1kv-local-repo)
+# and install it.
+# If not version is provided does nothing
+# If version is provided and it cannot get the package or 
+# it cannot install it, then returns 1 
+#
+function add_local_repo
+{
+    if [ "$VERSION" == "" ]; then
+        juju-log "Error: Please specify version if using local repo"
+        return 0
+    fi
 
-    if [ $vsm_running -eq 0 ]; then
-      /usr/bin/qemu-img create -f raw $diskfile ${disksize}G
-      juju-log "qemu-img create done"
+    if [ "$LOCAL_REPO" == "" ]; then
+        juju-log "Error: n1kv-local-repo not specified"
+        return 1
+    fi
+
+    if [ ! -d "$isofilepath" ]; then
+        mkdir $isofilepath
+    fi
+
+    cd $isofilepath
+    package="${LOCAL_REPO}/nexus-1000v-iso_${VERSION}_amd64.deb"
+    status=`wget -q $package`
+    if [ $? -ne 0 ]; then
+        juju-log "Error: couldn't get $package"
+        return 1
+    fi
+    juju-log "Download $package into $isofilepath"
+
+    /usr/bin/dpkg -i $package
+    /usr/bin/dpkg -s nexus-1000v-iso | grep -c '^Status: install ok installed'
+    if [ $? -eq 0 ]; then
+        juju-log "Error trying to install $package"
+        return 1
+    fi
+    juju-log "VSM is succesfully installed from local source"
+
+    return 0
+}
+
+function qemu_img_create
+{
+    juju-log "Check and create the qemu-img"
+
+    is_vsm_vm_running
+    if [ $? -eq 0 ]; then
+        /usr/bin/qemu-img create -f raw $diskfile ${disksize}G
+        juju-log "qemu-img create done"
     fi
 }
 
-vsm_running=`/usr/bin/virsh list | grep -c ' $vsmname .* running'`
-if [ $vsm_running -eq 0 ]; then
-    add_repo
-    download_vsm_iso_from_ppa
+juju-log "config-change hook"
+
+is_vsm_vm_running
+if [ $? -eq 0 ]; then 
+    if [ "$VERSION" == "" ]; then
+        add_remote_repo
+        download_vsm_iso_from_ppa
+    else 
+        add_local_repo
+        if [ $? -ne 0]; then
+            exit 1
+        fi
+    fi
     start_openvswitch
     update_ovs_interfaces
-    repack_iso
-    generate_vsm_vm_xml
-    qemu_img_create
+    created=`/usr/bin/virsh list --all | grep -c ' ${VSM_NAME}'`
+    if [ $created -eq 0 ]; then
+        repack_iso
+        generate_vsm_vm_xml
+        qemu_img_create
+    fi
 fi
+
+create_vsm_vm 
+if [ $? -eq 1 ]; then
+    exit 1
+fi 
+start_vsm_vm 
+if [ $?  -eq 1 ]; then
+    exit 1
+fi
+
+juju-log "vsm vm successfully running"
 
 hooks/dvs-relation-joined

@@ -1,10 +1,15 @@
 #!/bin/bash
 
+source ./hooks/lib/common.sh
+
 for rid in $( relation-ids dvs ); do
     juju-log "Relation-set for $rid"
-    xvsm_domain_id=$(config-get domainid)
-    xvsm_ip=$(config-get mgmtip)
-    #rid=$(relation-ids dvs)
-    relation-set -r $rid vsm_domain_id=$xvsm_domain_id
-    relation-set -r $rid vsm_ip=$xvsm_ip
+
+    domain_id=$(config-get n1kv-vsm-domain-id)
+    ip=$(config-get n1kv-vsm-mgmt-ip)
+
+    relation-set -r $rid vsm_domain_id=$domain_id
+    relation-set -r $rid vsm_ip=$ip
+
+    juju-log "Set relation vsm domain_id[$domain_id] and ip[$ip]"
 done

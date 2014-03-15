@@ -1,16 +1,18 @@
 #!/bin/bash
 # This hook is run directly after install
-# i.e. 'service apache2 start'
 
-function create_vsm_vm {
-    juju-log "Check and virsh create the vsm vm"
-    vsm_running=`/usr/bin/virsh list | grep -c ' $vsmname .* running'`
+source ./hooks/lib/common.sh
 
-    if [ $vsm_running -eq 0 ]; then
-      /usr/bin/virsh create /var/spool/vsm/vsm_vm.xml
-      juju-log "virsh create of vsm vm done"
-    fi
+juju-log "start: handling hook"
 
-}
+create_vsm_vm 
+if [ $? -eq 1 ]; then
+    exit 1
+fi 
 
-create_vsm_vm
+start_vsm_vm 
+if [ $?  -eq 1 ]; then
+    exit 1
+fi
+
+juju-log "start: successfully running!"

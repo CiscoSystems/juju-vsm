@@ -2,11 +2,11 @@ options:
   n1kv-vsm-name:
     type: string
     default: "vsm-p"
-    description: "Nexus1k VSM virtual machine name"
+    description: "Nexus1000v VSM virtual machine name"
   n1kv-vsm-role:
     type: string
     default: "primary"
-    description: "Nexus1k VSMs role - primary or secondary"
+    description: "Nexus1000v VSMs role - primary or secondary"
   n1kv-vsm-domain-id:
     type: int
     default: 101
@@ -31,15 +31,15 @@ options:
     type: int
     default: 2
     description: "VSM virtual machine name"
-  ovsbridge:
+  n1kv-bridge-name:
     type: string
     default: "br-int"
-    description: "ovs bridge behind which the vsm will be attached"
-  physicalinterfaceforovs:
+    description: "bridge behind which the vsm will be attached"
+  n1kv-phy-intf-bridge:
     type: string
     default: "eth0"
-    description: "physical uplink interface for the ovs bridge"
-  isoimage:
+    description: "physical uplink interface for the bridge"
+  iso-image:
     type: string
     default: "n1000v-dk9.5.2.1.SK1.2.1.iso"
     description: "VSM virtual machine name"
@@ -67,10 +67,6 @@ options:
     type: string
     default: "00:10:11:72:40:03"
     description: "Mac address of Packet interface from VSM"
-  n1kv-vsm-vm-memory:
-    type: int
-    default: 2048000
-    description: "Memory for the Nexus1k VSM virtual machine"
   n1kv-vsm-vm-vcpu:
     type: int
     default: 2
@@ -82,10 +78,14 @@ options:
   n1kv-source:
     type: string
     default: distro
-    description: |
-      Optional configuration to support use of additional sources such as:
-      .
-        - ppa:myteam/ppa
-        - deb http://my.archive.com/ubuntu main|KEYID
-      .
-      Note that this is used only for Cisco n1kv plugin.
+    description: "(Optional) Additinal sources: ppa:myteam/ppa, deb http://my.archive.com/ubuntu main|KEYID"
+  n1kv-version:
+    type: string
+    default: ""
+    description: "(Optional) Indicates VSM version. By default picks up the latest"
+  n1kv-local-repo:
+    type: string
+    default: ""
+    description: "(Optional) Provide the local address of VSM iso package"
+
+

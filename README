@@ -76,7 +76,8 @@ To put VEM into VSM supervision, user needs to do the following:
 
 Contact Information
 -------------------
-Author: Marga Millet Sorolla <millet@cisco.com>
+Author: Marga Millet <millet@cisco.com> 
+        Mani Devarajan <mdevaraj@cisco.com>
 
 Report bugs at: http://bugs.launchpad.net/charms/+source/vsm
 

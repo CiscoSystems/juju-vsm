@@ -1,2 +1,25 @@
 #!/bin/bash
-echo "WIP"
+
+source ./hooks/lib/common.sh
+
+function stop_vm
+{
+    juju-log "stop: handling hook"
+
+    is_vsm_vm_running
+    if [ $? -eq 1 ]; then
+        virsh shutdown ${VSM_NAME}
+    fi
+
+    sleep 5
+
+    is_vsm_vm_running
+    if [ $? -eq 1 ]; then
+        virsh destroy ${VSM_NAME}
+    fi
+}
+
+stop_vm
+
+juju-log "stop: vsm vm succesfully shutdown"
+
