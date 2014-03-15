@@ -56,7 +56,8 @@ function start_vsm_vm
     juju-log "Get vsm vm state"
     state="`sudo virsh dominfo $VSM_NAME | awk '/State:/' | cut -d: -f 2 | tr -d ' '`"
     case $state in
-        running)   juju-log "vsm $VSM_NAME is already runnning"
+        running)   juju-log "vsm $VSM_NAME is already runnning
+                   /usr/bin/virsh start ${VSM_NAME}"
                    ;;
         shut*)     juju-log "need to restart vsm $VSM_NAME"
                    /usr/bin/virsh start ${VSM_NAME}
