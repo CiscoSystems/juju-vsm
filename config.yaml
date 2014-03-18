@@ -39,10 +39,6 @@ options:
     type: string
     default: "eth0"
     description: "physical uplink interface for the bridge"
-  iso-image:
-    type: string
-    default: "n1000v-dk9.5.2.1.SK1.2.1.iso"
-    description: "VSM virtual machine name"
   n1kv-vsm-ctrl-interface:
     type: string
     default: "tap0"

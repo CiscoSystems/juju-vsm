@@ -8,7 +8,6 @@ source ./hooks/lib/common.sh
 ovsbridge=$(config-get n1kv-bridge-name)
 physicalinterfaceforovs=$(config-get n1kv-phy-intf-bridge)
 consolepts=$(config-get n1kv-vsm-console-pts)
-isoimage=$(config-get iso-image)
 vsmrole=$(config-get n1kv-vsm-role)
 domainid=$(config-get n1kv-vsm-domain-id)
 adminpasswd=$(config-get n1kv-vsm-password)
@@ -29,12 +28,11 @@ LOCAL_REPO=$(config-get n1kv-local-repo)
 
 finaliso=${VSM_VM_DIR}/${vsmrole}_repacked.iso
 diskfile=${VSM_VM_DIR}/${vsmrole}_disk
-isofile=${VSM_ISO_DIR}/${isoimage}
 isofilepath=${VSM_ISO_DIR}
 
 export physicalinterfaceforovs ovsbridge
 export nodeip nodenetmask nodegateway nodedns
-export isoimage diskfile disksize consolepts isofilepath isofile finaliso
+export diskfile disksize consolepts isofilepath VSM_ISO finaliso
 export domainid mgmtip mgmtnetmask mgmtgateway adminpasswd vsmrole
 export ctrlinterface ctrlmac mgmtinterface mgmtmac pktinterface pktmac vcpu
 
@@ -73,14 +71,17 @@ function update_ovs_interfaces
 #Find the name of nexus vsm iso
 function get_vsm_iso_filename
 {
+    local isofile files
+
     juju-log "Determine the file of nexus vsm iso in $isofilepath"
     files=( ${isofilepath}/*.iso )
     for file in "${files[@]}"
     do
         isofile="${file}"
-        juju-log "isofile is $isofile"
+        juju-log "vsm isofile is $isofile"
         break
     done
+    VSM_ISO=$isofile
 }
 
 #Repack the nexus 1k iso
@@ -88,7 +89,7 @@ function repack_iso
 {
     juju-log "Repack the VSM ISO with the setup script environment variables"
     pwd
-    ./hooks/lib/repackiso.py -i $isofile -d $domainid -n $VSM_NAME -m $mgmtip -s $mgmtnetmask -g $mgmtgateway -p $adminpasswd -r $vsmrole -f $finaliso
+    ./hooks/lib/repackiso.py -i ${VSM_ISO} -d $domainid -n ${VSM_NAME} -m $mgmtip -s $mgmtnetmask -g $mgmtgateway -p $adminpasswd -r $vsmrole -f $finaliso
 }
 
 #Generate the vsm vm xml file
@@ -178,6 +179,7 @@ function add_local_repo
         return 1
     fi
     juju-log "VSM is succesfully installed from local source"
+    get_vsm_iso_filename
 
     return 0
 }
