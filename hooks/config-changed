@@ -74,7 +74,7 @@ function update_ovs_interfaces
 function get_vsm_iso_filename
 {
     juju-log "Determine the file of nexus vsm iso in $isofilepath"
-    files=( ${isofilepath}*.iso )
+    files=( ${isofilepath}/*.iso )
     for file in "${files[@]}"
     do
         isofile="${file}"
