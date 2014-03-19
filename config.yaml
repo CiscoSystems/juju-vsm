@@ -10,15 +10,15 @@ options:
   n1kv-vsm-domain-id:
     type: int
     default: 101
-    description: "Domain id this nexus1k vsm will be controlling"
+    description: "Domain id this Nexus1000v VSM will control"
   n1kv-vsm-password:
     type: string
     default: "N1k12345"
-    description: "admin password for the VSM virtual machine"
+    description: "Password of the admin user for the VSM virtual machine"
   n1kv-vsm-mgmt-ip:
     type: string
     default: ""
-    description: "VSM virtual machines management ip address"
+    description: "VSM virtual machine management ip address"
   n1kv-vsm-mgmt-netmask:
     type: string
     default: ""
@@ -30,19 +30,19 @@ options:
   n1kv-vsm-console-pts:
     type: int
     default: 2
-    description: "VSM virtual machine name"
+    description: "VSM virtual machine console port"
   n1kv-bridge-name:
     type: string
     default: "br-int"
-    description: "bridge behind which the vsm will be attached"
+    description: "Bridge name behind which the VSM will be attached"
   n1kv-phy-intf-bridge:
     type: string
     default: "eth0"
-    description: "physical uplink interface for the bridge"
+    description: "Physical uplink interface for the bridge"
   n1kv-vsm-ctrl-interface:
     type: string
     default: "tap0"
-    description: "Control tap interface name"
+    description: "Control tap interface name for the VSM VM"
   n1kv-vsm-ctrl-mac:
     type: string
     default: "00:10:11:72:40:00"
@@ -50,7 +50,7 @@ options:
   n1kv-vsm-mgmt-interface:
     type: string
     default: "tap1"
-    description: "Management tap interface name"
+    description: "Management tap interface name for the VSM VM"
   n1kv-vsm-mgmt-mac:
     type: string
     default: "00:10:11:72:40:02"
@@ -58,23 +58,15 @@ options:
   n1kv-vsm-pkt-interface:
     type: string
     default: "tap2"
-    description: "Packet tap interface name"
+    description: "Packet tap interface name for the VSM VM"
   n1kv-vsm-pkt-mac:
     type: string
     default: "00:10:11:72:40:03"
     description: "Mac address of Packet interface from VSM"
-  n1kv-vsm-vm-vcpu:
-    type: int
-    default: 2
-    description: "Number of VCPU for the Nexus1k VSM virtual machine"
-  n1kv-vsm-vm-disksize:
-    type: int
-    default: 4
-    description: "Disk size for the Nexus1k VSM virtual machine"
   n1kv-source:
     type: string
     default: distro
-    description: "(Optional) Additinal sources: ppa:myteam/ppa, deb http://my.archive.com/ubuntu main|KEYID"
+    description: "Additinal sources: ppa:myteam/ppa, deb http://my.archive.com/ubuntu main|KEYID"
   n1kv-version:
     type: string
     default: ""

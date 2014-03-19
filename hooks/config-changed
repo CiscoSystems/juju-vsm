@@ -20,8 +20,6 @@ mgmtinterface=$(config-get n1kv-vsm-mgmt-interface)
 mgmtmac=$(config-get n1kv-vsm-mgmt-mac)
 pktinterface=$(config-get n1kv-vsm-pkt-interface)
 pktmac=$(config-get n1kv-vsm-pkt-mac)
-vcpu=$(config-get n1kv-vsm-vm-vcpu)
-disksize=$(config-get n1kv-vsm-vm-disksize)
 VERSION=$(config-get n1kv-version)
 LOCAL_REPO=$(config-get n1kv-local-repo)
 
