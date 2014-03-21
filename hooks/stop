@@ -21,5 +21,5 @@ function stop_vm
 
 stop_vm
 
-juju-log "stop: vsm vm succesfully shutdown"
+juju-log "stop: vsm vm called ${VSM_NAME} succesfully shutdown"
 

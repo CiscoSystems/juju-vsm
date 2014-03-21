@@ -5,7 +5,7 @@ export LOG_TERMINAL VSM_NAME VSM_ISO_DIR VSM_VM_DIR VSM_VM_XML
 
 VSM_NAME=$(config-get n1kv-vsm-name)
 VSM_ISO_DIR="/opt/cisco/iso"
-VSM_VM_DIR="/var/spool/vsm"
+VSM_VM_DIR="/var/spool/cisco/vsm"
 VSM_VM_XML="vsm_vm.xml"
 
 
@@ -21,7 +21,7 @@ function logger
 # Returns 0 if VSM is not running
 function is_vsm_vm_running
 {
-    local run=$(sudo virsh list --all | grep $VSM_NAME | awk '{print $NF}')
+    local run=$(sudo virsh list --all | grep ${VSM_NAME} | awk '{print $NF}')
     if [ "$run" == "running" ]; then
         return 1
     else
@@ -33,19 +33,19 @@ function is_vsm_vm_running
 # Returns 1 if it was not able to create it
 function create_vsm_vm
 {
-    juju-log "start: Check if $VSM_NAME vm already exists"
+    juju-log "start: Check if ${VSM_NAME} vm already exists"
 
-    if [ `/usr/bin/virsh list --all | grep -c $VSM_NAME` -eq 1 ]; then
+    if [ `/usr/bin/virsh list --all | grep -c ${VSM_NAME}` -eq 1 ]; then
         return 0
     fi
 
     juju-log "Define vsm vm"
     if [ ! -f ${VSM_VM_DIR}/${VSM_VM_XML} ]; then
-        juju-log "Error: $VSM_NAME template doesn't exists"
+        juju-log "Error: ${VSM_NAME} template doesn't exists"
         return 1
     fi
     /usr/bin/virsh define ${VSM_VM_DIR}/${VSM_VM_XML}
-    if [ "`sudo virsh list --all | awk '/shut off/{print $2}'`" != "$VSM_NAME" ]; then
+    if [ "`sudo virsh list --all | awk '/shut off/{print $2}'`" != "${VSM_NAME}" ]; then
         juju-log "start: unable to define vsm vm"
         return 1
     fi
@@ -54,15 +54,15 @@ function create_vsm_vm
 function start_vsm_vm
 {
     juju-log "Get vsm vm state"
-    state="`sudo virsh dominfo $VSM_NAME | awk '/State:/' | cut -d: -f 2 | tr -d ' '`"
+    state="`sudo virsh dominfo ${VSM_NAME} | awk '/State:/' | cut -d: -f 2 | tr -d ' '`"
     case $state in
-        running)   juju-log "vsm $VSM_NAME is already runnning"
+        running)   juju-log "vsm ${VSM_NAME} is already runnning"
                    /usr/bin/virsh start ${VSM_NAME}
                    ;;
-        shut*)     juju-log "need to restart vsm $VSM_NAME"
+        shut*)     juju-log "need to restart vsm ${VSM_NAME}"
                    /usr/bin/virsh start ${VSM_NAME}
                    ;;
-        *)         juju-log "Unknown state($state) of vsm $VSM_NAME"
+        *)         juju-log "Unknown state($state) of vsm ${VSM_NAME}"
                    ;;
     esac
     return 0

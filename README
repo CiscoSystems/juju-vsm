@@ -1,19 +1,18 @@
 Overview
 --------
-There are two major components in a Cisco Nexus1000V 
-environment : VSM and VEM (Virtual Ether Module). VSM 
-is a virtual machine on a baremetal server. VEM runs 
-inside each host. VSM, as the name goes, supervises and 
-manages multiple VSMs.  
+There are two major components in a Cisco Nexus 1000V environment: 
+VSM (Virtual Switch Supervisor) and VEM (Virtual Ethernet Module).
+VSM is a virtual machine on a baremetal server. VEM runs inside each host. 
+VSM, as the name goes, supervises and manages multiple VSMs.  
 In the OpenStack deployment environment, VSM prepares north 
 bound REST APIs that communicate with OpenStack Nova Cloud 
 Controller for network profile configuration, policy profile 
 notification, network creation, subnet creation, and virtual 
 machine workload administration.
 VSM charm installs the Nexus 1000V virtual switch Supervisor 
-Module virtual machine  onto a MaaS cluster node. A cluster can 
-have up to 2 VSM in active/standby mode. When the active one 
-fails, the standby will take over within bounded time.
+Module virtual machine onto a MaaS cluster node. A cluster can 
+have up to 2 VSM in active/standby mode (generally in two different servers).
+When the active one fails, the standby will take over within bounded time.
 
 Usage
 -----
@@ -22,9 +21,9 @@ VSM on a cluster node as well as VEM module that goes into each
 host. 
 
 In the config.yaml you can provide general config that will be 
-common to all VSM hosts in environement. To differentiate the 
+common to all VSM hosts in environment. To differentiate the 
 different primary and secondary VSM configuration, we create 
-seperate sections for them, for example:
+separate sections for them, for example:
 
 vsm-primary:
 
@@ -59,6 +58,12 @@ vsm-secondary:
     n1kv-vsm-mgmt-netmask: 0.0.0.0
 
     n1kv-mgmt-gateway: 0.0.0.0
+
+    n1kv-vsm-ctrl-mac: 00:10:11:72:41:01 
+
+    n1kv-vsm-mgmt-mac: 00:10:11:72:41:02
+
+    n1kv-vsm-pkt-mac: 00:10:11:72:41:03
 
     .....
    

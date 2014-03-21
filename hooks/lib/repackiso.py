@@ -30,7 +30,6 @@ print "vsmname  " + vsmname
 print "mgmtip  " + mgmtip
 print "mgmtsubnet  " + mgmtsubnet
 print "mgmtgateway  " + mgmtgateway
-print "adminpasswd  " + adminpasswd
 print "vsmrole  " + vsmrole
 print "repackediso  " + repackediso
 

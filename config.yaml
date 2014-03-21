@@ -2,7 +2,7 @@ options:
   n1kv-vsm-name:
     type: string
     default: "vsm-p"
-    description: "Nexus1000v VSM virtual machine name"
+    description: "Nexus1000v VSM virtual machine (VM) name"
   n1kv-vsm-role:
     type: string
     default: "primary"
@@ -14,7 +14,7 @@ options:
   n1kv-vsm-password:
     type: string
     default: "N1k12345"
-    description: "Password of the admin user for the VSM virtual machine"
+    description: "Password of the admin user for the VSM VM"
   n1kv-vsm-mgmt-ip:
     type: string
     default: ""
@@ -31,6 +31,14 @@ options:
     type: int
     default: 2
     description: "VSM virtual machine console port"
+  n1kv-vsm-vm-vcpu:
+    type: int
+    default: 2
+    description: "Number of VCPU for the VSM VM"
+  n1kv-vsm-disk-size:
+    type: int
+    default: 4
+    description: "Disk size (in GB) for the VSM VM"
   n1kv-bridge-name:
     type: string
     default: "br-int"
