@@ -40,7 +40,7 @@
                     <mac address='${ctrlmac}'/>
                     <source bridge='${ovsbridge}'/>
                     <virtualport type='openvswitch' />
-                    <target dev='tap0'/>
+                    <target dev='${VSM_CTRL_IF}'/>
                     <model type='e1000'/>
           </interface>
 
@@ -48,7 +48,7 @@
                     <mac address='${mgmtmac}'/>
                     <source bridge='${ovsbridge}'/>
                     <virtualport type='openvswitch' />
-                    <target dev='tap1'/>
+                    <target dev='${VSM_MGMT_IF}'/>
                     <model type='e1000'/>
           </interface>
 
@@ -56,7 +56,7 @@
                     <mac address='${pktmac}'/>
                     <source bridge='${ovsbridge}'/>
                     <virtualport type='openvswitch' />
-                    <target dev='tap2'/>
+                    <target dev='${VSM_PKT_IF}'/>
                     <model type='e1000'/>
           </interface>
 

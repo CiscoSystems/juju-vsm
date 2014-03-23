@@ -57,10 +57,11 @@ function start_vsm_vm
     state="`sudo virsh dominfo ${VSM_NAME} | awk '/State:/' | cut -d: -f 2 | tr -d ' '`"
     case $state in
         running)   juju-log "vsm ${VSM_NAME} is already runnning"
-                   /usr/bin/virsh start ${VSM_NAME}
                    ;;
         shut*)     juju-log "need to restart vsm ${VSM_NAME}"
                    /usr/bin/virsh start ${VSM_NAME}
+                   # Restart ovs to handle server reboot case
+                   service openvswitch-switch restart
                    ;;
         *)         juju-log "Unknown state($state) of vsm ${VSM_NAME}"
                    ;;

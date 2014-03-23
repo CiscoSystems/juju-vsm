@@ -14,11 +14,11 @@ adminpasswd=$(config-get n1kv-vsm-password)
 mgmtip=$(config-get n1kv-vsm-mgmt-ip)
 mgmtnetmask=$(config-get n1kv-vsm-mgmt-netmask)
 mgmtgateway=$(config-get n1kv-vsm-mgmt-gateway)
-ctrlinterface=$(config-get n1kv-vsm-ctrl-interface)
+VSM_CTRL_IF=$(config-get n1kv-vsm-ctrl-interface)
 ctrlmac=$(config-get n1kv-vsm-ctrl-mac)
-mgmtinterface=$(config-get n1kv-vsm-mgmt-interface)
+VSM_MGMT_IF=$(config-get n1kv-vsm-mgmt-interface)
 mgmtmac=$(config-get n1kv-vsm-mgmt-mac)
-pktinterface=$(config-get n1kv-vsm-pkt-interface)
+VSM_PKT_IF=$(config-get n1kv-vsm-pkt-interface)
 pktmac=$(config-get n1kv-vsm-pkt-mac)
 vcpu=$(config-get n1kv-vsm-vm-vcpu)
 disksize=$(config-get n1kv-vsm-disk-size)
@@ -33,7 +33,7 @@ export physicalinterfaceforovs ovsbridge
 export nodeip nodenetmask nodegateway nodedns
 export diskfile disksize consolepts isofilepath VSM_ISO finaliso
 export domainid mgmtip mgmtnetmask mgmtgateway adminpasswd vsmrole
-export ctrlinterface ctrlmac mgmtinterface mgmtmac pktinterface pktmac vcpu
+export VSM_CTRL_IF VSM_MGMT_IF VSM_PKT_IF ctrlmac mgmtmac pktmac vcpu
 
 #start the openvswitch
 function start_openvswitch

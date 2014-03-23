@@ -49,7 +49,7 @@ options:
     description: "Physical uplink interface for the bridge"
   n1kv-vsm-ctrl-interface:
     type: string
-    default: "tap0"
+    default: "vsm-ctrl0"
     description: "Control tap interface name for the VSM VM"
   n1kv-vsm-ctrl-mac:
     type: string
@@ -57,7 +57,7 @@ options:
     description: "Mac address of Control interface from VSM"
   n1kv-vsm-mgmt-interface:
     type: string
-    default: "tap1"
+    default: "vsm-mgmt0"
     description: "Management tap interface name for the VSM VM"
   n1kv-vsm-mgmt-mac:
     type: string
@@ -65,7 +65,7 @@ options:
     description: "Mac address of Management interface from VSM"
   n1kv-vsm-pkt-interface:
     type: string
-    default: "tap2"
+    default: "vsm-pkt0"
     description: "Packet tap interface name for the VSM VM"
   n1kv-vsm-pkt-mac:
     type: string
