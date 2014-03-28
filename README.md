@@ -47,7 +47,7 @@ vsm-primary:
 
     n1kv-vsm-mgmt-netmask: 255.255.255.0
 
-    n1kv-mgmt-gateway: 10.10.10.1
+    n1kv-vsm-mgmt-gateway: 10.10.10.1
 
     .....
 
