@@ -2,6 +2,8 @@
 
 source ./hooks/lib/common.sh
 
+set -e
+
 for rid in $( relation-ids dvs ); do
     juju-log "Relation-set for $rid"
 

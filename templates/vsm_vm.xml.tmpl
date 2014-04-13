@@ -1,6 +1,6 @@
 <domain type='kvm' >
      <name>${VSM_NAME}</name>
-     <memory unit='KiB'>4096000</memory>
+     ${VSM_MEM_STR}
      <vcpu placement='static'>${vcpu}</vcpu>
 
      <os>
@@ -37,7 +37,7 @@
           </controller>
 
           <interface type='bridge'>
-                    <mac address='${ctrlmac}'/>
+                    ${VSM_CMAC_STR}
                     <source bridge='${ovsbridge}'/>
                     <virtualport type='openvswitch' />
                     <target dev='${VSM_CTRL_IF}'/>
@@ -45,7 +45,7 @@
           </interface>
 
           <interface type='bridge'>
-                    <mac address='${mgmtmac}'/>
+                    ${VSM_MMAC_STR}
                     <source bridge='${ovsbridge}'/>
                     <virtualport type='openvswitch' />
                     <target dev='${VSM_MGMT_IF}'/>
@@ -53,7 +53,7 @@
           </interface>
 
           <interface type='bridge'>
-                    <mac address='${pktmac}'/>
+                    ${VSM_PMAC_STR}
                     <source bridge='${ovsbridge}'/>
                     <virtualport type='openvswitch' />
                     <target dev='${VSM_PKT_IF}'/>
@@ -66,7 +66,7 @@
           </console>
 
           <input type='mouse' bus='ps2'/>
-          <graphics type='vnc' port='8901' autoport='no' listen='0.0.0.0' keymap='en-us'>
+          <graphics type='vnc' port='${VSM_VNC_PORT}' autoport='${VSM_VNC_AUTO}' listen='0.0.0.0' keymap='en-us'>
           </graphics>
 
       </devices>

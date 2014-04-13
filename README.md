@@ -61,18 +61,6 @@ vsm-secondary:
 
     n1kv-vsm-role: secondary
 
-    n1kv-vsm-vsm-ip: 0.0.0.0
-
-    n1kv-vsm-mgmt-netmask: 0.0.0.0
-
-    n1kv-vsm-mgmt-gateway: 0.0.0.0
-
-    n1kv-vsm-ctrl-mac: 00:10:11:72:41:01 
-
-    n1kv-vsm-mgmt-mac: 00:10:11:72:41:02
-
-    n1kv-vsm-pkt-mac: 00:10:11:72:41:03
-
     .....
    
 
