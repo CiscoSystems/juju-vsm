@@ -35,6 +35,10 @@ options:
     type: int
     default: 2
     description: "Number of VCPU for the VSM VM"
+  n1kv-vsm-memory-size:
+    type: int
+    default: 4
+    description: "Memory size (in KiB) for the VSM VM"
   n1kv-vsm-disk-size:
     type: int
     default: 4
@@ -53,24 +57,28 @@ options:
     description: "Control tap interface name for the VSM VM"
   n1kv-vsm-ctrl-mac:
     type: string
-    default: "00:10:11:72:40:00"
-    description: "Mac address of Control interface from VSM"
+    default: ""
+    description: "Mac address of Control interface from VSM. By default is assigned randomly."
   n1kv-vsm-mgmt-interface:
     type: string
     default: "vsm-mgmt0"
     description: "Management tap interface name for the VSM VM"
   n1kv-vsm-mgmt-mac:
     type: string
-    default: "00:10:11:72:40:02"
-    description: "Mac address of Management interface from VSM"
+    default: ""
+    description: "Mac address of Management interface from VSM. By default is assigned randomly."
   n1kv-vsm-pkt-interface:
     type: string
     default: "vsm-pkt0"
     description: "Packet tap interface name for the VSM VM"
   n1kv-vsm-pkt-mac:
     type: string
-    default: "00:10:11:72:40:03"
-    description: "Mac address of Packet interface from VSM"
+    default: ""
+    description: "Mac address of Packet interface from VSM. By default is assigned randomly."
+  n1kv-vsm-vnc-port:
+    type: int
+    default: 8901
+    description: "VNC port number to of the VSM console"
   n1kv-source:
     type: string
     default: distro

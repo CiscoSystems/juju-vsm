@@ -29,19 +29,30 @@ function is_vsm_vm_running
     fi
 }
 
+# Returns 0 if VSM VM is not created
+function is_vsm_vm_created
+{
+    if [ `/usr/bin/virsh list --all | grep -c ${VSM_NAME}` -eq 1 ]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
 # It creates a persistent VSM VM if it was not created already
 # Returns 1 if it was not able to create it
 function create_vsm_vm
 {
-    juju-log "start: Check if ${VSM_NAME} vm already exists"
+    juju-log "Check if ${VSM_NAME} vm already exists"
 
     if [ `/usr/bin/virsh list --all | grep -c ${VSM_NAME}` -eq 1 ]; then
+        juju-log "vsm vm is already created"
         return 0
     fi
 
     juju-log "Define vsm vm"
     if [ ! -f ${VSM_VM_DIR}/${VSM_VM_XML} ]; then
-        juju-log "Error: ${VSM_NAME} template doesn't exists"
+        juju-log "Error: ${VSM_NAME} template does not exist"
         return 1
     fi
     /usr/bin/virsh define ${VSM_VM_DIR}/${VSM_VM_XML}
@@ -60,6 +71,10 @@ function start_vsm_vm
                    ;;
         shut*)     juju-log "need to restart vsm ${VSM_NAME}"
                    /usr/bin/virsh start ${VSM_NAME}
+                   if [ $? -eq 1 ]; then
+                       juju-log "Error: vsm vm is shutdown but couldn't restart it"
+                       return 1
+                   fi
                    # Restart ovs to handle server reboot case
                    service openvswitch-switch restart
                    ;;
@@ -69,5 +84,5 @@ function start_vsm_vm
     return 0
 }
 
-export -f logger is_vsm_vm_running create_vsm_vm start_vsm_vm
+export -f logger is_vsm_vm_running is_vsm_vm_created create_vsm_vm start_vsm_vm
 

@@ -8,6 +8,7 @@ function stop_vm
 
     is_vsm_vm_running
     if [ $? -eq 1 ]; then
+        juju-log "Shutting down vsm vm"
         virsh shutdown ${VSM_NAME}
     fi
 
@@ -15,6 +16,7 @@ function stop_vm
 
     is_vsm_vm_running
     if [ $? -eq 1 ]; then
+        juju-log "Destroying vsm vm"
         virsh destroy ${VSM_NAME}
     fi
 }

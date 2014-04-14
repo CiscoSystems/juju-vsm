@@ -1,17 +1,18 @@
 #!/bin/bash
-# This hook is run directly after install
 
 source ./hooks/lib/common.sh
 
 juju-log "start: handling hook"
 
-create_vsm_vm 
-if [ $? -eq 1 ]; then
-    exit 1
+# Check if the VM is created. If not, then re-do the config_changed hook
+is_vsm_vm_created
+if [ $? -eq 0 ]; then
+    hooks/config-changed
 fi 
 
 start_vsm_vm 
 if [ $?  -eq 1 ]; then
+    juju-log "Error: couldn't start vsm"
     exit 1
 fi
 
