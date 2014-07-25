@@ -6,7 +6,7 @@ options:
   n1kv-vsm-role:
     type: string
     default: "primary"
-    description: "Nexus1000v VSMs role - primary or secondary"
+    description: "N1KV VSMs role - primary or secondary"
   n1kv-vsm-domain-id:
     type: int
     default: 101
