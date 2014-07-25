@@ -18,6 +18,39 @@ function logger
     fi
 }
 
+# Checks if a ip is valid. If so, then it returns 1, else it returns 0
+function is_valid_ip
+{
+    local  ip=$1
+
+    if [[ $ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+        OIFS=$IFS
+        IFS='.'
+        ip=($ip)
+        IFS=$OIFS
+        [[ ${ip[0]} -le 255 && ${ip[1]} -le 255 && ${ip[2]} -le 255 && ${ip[3]} -le 255 ]]
+        if [ $? -eq 0 ]; then
+            return 1
+        else
+            return 0
+        fi
+    fi
+    return 0
+}
+
+# Function than given a mac address on the format XX:XX:XX:XX:XX:XX,
+# it returns 1 if is valid or 0 if it is not.
+function is_valid_mac
+{
+    local mac=$(echo $1 | sed -n "/^\([0-9A-F][0-9A-F]:\)\{5\}[0-9A-F][0-9A-F]$/Ip" | awk '{print toupper($0)}' )
+
+    if [ "$mac" == "" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 # Returns 0 if VSM is not running
 function is_vsm_vm_running
 {
@@ -84,5 +117,5 @@ function start_vsm_vm
     return 0
 }
 
-export -f logger is_vsm_vm_running is_vsm_vm_created create_vsm_vm start_vsm_vm
+export -f logger is_valid_ip is_valid_mac is_vsm_vm_running is_vsm_vm_created create_vsm_vm start_vsm_vm
 

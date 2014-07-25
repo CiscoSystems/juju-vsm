@@ -34,6 +34,54 @@ export VSM_MEM_STR VSM_CTRL_IF VSM_MGMT_IF VSM_PKT_IF vcpu
 export VSM_CMAC_STR VSM_MMAC_STR VSM_PMAC_STR VSM_VNC_PORT VSM_VNC_AUTO
 
 
+# Check vsm vm parameters. 
+# If all are correct, return 1
+#    if any of then are invalid, then return 0
+function are_vsm_vm_input_params_valid
+{
+    local r=1
+    local mac
+
+    if [ "$vsmrole" != "primary" -a "$vsmrole" != "secondary" ]; then
+        juju-log "Error: invalid n1kv-vsm-role[$vsmrole]. It should be primary or secondary."
+        r=0
+    fi
+    is_valid_ip $mgmtip
+    if [[ $? -eq 0 ]]; then
+        juju-log "Error: n1kv-vsm-mgmt-ip: $mgmtip format is invalid"
+        r=0
+    fi
+    is_valid_ip $mgmtgateway
+    if [[ $? -eq 0 ]]; then
+        juju-log "Error: n1kv-vsm-mgmt-gateway: $mgmtgateway format is invalid"
+        r=0
+    fi
+    is_valid_ip $mgmtnetmask
+    if [[ $? -eq 0 ]]; then
+        juju-log "Error: n1kv-vsm-mgmt-netmask: $mgmtnetmask format is invalid"
+        r=0
+    fi
+    mac=$(config-get n1kv-vsm-ctrl-mac)
+    is_valid_mac $mac
+    if [ "$mac" != "" -a $? -eq 0 ]; then
+        juju-log "Error: n1kv-vsm-ctrl-mac: $mac format is invalid"
+        r=0
+    fi
+    mac=$(config-get n1kv-vsm-mgmt-mac)
+    is_valid_mac $mac
+    if [ "$mac" != "" -a $? -eq 0 ]; then
+        juju-log "Error: n1kv-vsm-mgmt-mac: $mac format is invalid"
+        r=0
+    fi
+    mac=$(config-get n1kv-vsm-pkt-mac)
+    is_valid_mac $mac
+    if [ "$mac" != "" -a $? -eq 0 ]; then
+        juju-log "Error: n1kv-vsm-pkt-mac: $mac format is invalid"
+        r=0
+    fi
+    return $r
+}
+
 #start the openvswitch
 function start_openvswitch
 {
@@ -335,6 +383,11 @@ fi
 
 is_vsm_vm_created
 if [ $? -eq 0 ]; then
+    are_vsm_vm_input_params_valid
+    if [ $? -eq 0 ]; then
+        juju-log "Error: Please, verify vsm vm config parameters are valid"
+        exit 1
+    fi
     juju-log "Going to repackage and create vsm vm"
     repack_iso
     if [ $? -eq 1 ]; then
