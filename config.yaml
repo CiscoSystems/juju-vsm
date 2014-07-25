@@ -2,7 +2,7 @@ options:
   n1kv-vsm-name:
     type: string
     default: "vsm-p"
-    description: "Nexus1000v VSM virtual machine (VM) name"
+    description: "N1KV VSM virtual machine (VM) name"
   n1kv-vsm-role:
     type: string
     default: "primary"
